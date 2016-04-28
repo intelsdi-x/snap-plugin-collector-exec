@@ -1,6 +1,6 @@
 # snap plugin collector - exec
 
-The plugin launch executable files and collects their outputs.
+The plugin launches executable files and collects their outputs.
 
 The plugin is a generic plugin. You can configure metrics names, type of collecting data, executables files, arguments necessary for executables files.
 
@@ -194,11 +194,12 @@ $ $SNAP_PATH/bin/snapctl task create -t task.json
 ### Roadmap
 There isn't a current roadmap for this plugin, but it is in active development. As we launch this plugin, we do not have any outstanding requirements for the next release.
 
+If you have a feature request, please add it as an [issue](https://github.com/intelsdi-x/snap-plugin-collector-users/issues) and/or submit a [pull request](https://github.com/intelsdi-x/snap-plugin-collector-users/pulls).
+
 ## Community Support
 This repository is one of **many** plugins in **snap**, a powerful telemetry framework. See the full project at http://github.com/intelsdi-x/snap.
 
-To reach out on other use cases, visit:
-* [Snap Gitter channel](https://gitter.im/intelsdi-x/snap)
+To reach out to other users, head to the [main framework](https://github.com/intelsdi-x/snap#community-support) or visit [snap Gitter channel](https://gitter.im/intelsdi-x/snap).
 
 ## Contributing
 We love contributions!
