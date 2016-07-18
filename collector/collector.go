@@ -28,7 +28,6 @@ import (
 	"os"
 	"os/exec"
 	"strconv"
-	"strings"
 	"sync"
 	"time"
 
@@ -36,6 +35,7 @@ import (
 	"github.com/intelsdi-x/snap-plugin-utilities/config"
 	"github.com/intelsdi-x/snap/control/plugin"
 	"github.com/intelsdi-x/snap/control/plugin/cpolicy"
+	"github.com/intelsdi-x/snap/core"
 	"github.com/intelsdi-x/snap/core/serror"
 	"github.com/mitchellh/mapstructure"
 )
@@ -102,8 +102,8 @@ func New() *Plugin {
 
 // GetMetricTypes returns list of available metric types
 // It returns error in case retrieval was not successful
-func (p *Plugin) GetMetricTypes(cfg plugin.PluginConfigType) ([]plugin.PluginMetricType, error) {
-	mts := []plugin.PluginMetricType{}
+func (p *Plugin) GetMetricTypes(cfg plugin.ConfigType) ([]plugin.MetricType, error) {
+	mts := []plugin.MetricType{}
 	item, err := config.GetConfigItem(cfg, setFileConfigVar)
 	if err != nil {
 		return mts, err
@@ -120,8 +120,8 @@ func (p *Plugin) GetMetricTypes(cfg plugin.PluginConfigType) ([]plugin.PluginMet
 	}
 
 	for mtsName := range p.metrics {
-		mts = append(mts, plugin.PluginMetricType{
-			Namespace_: []string{vendor, pluginName, mtsName}})
+		mts = append(mts, plugin.MetricType{
+			Namespace_: core.NewNamespace(vendor, pluginName, mtsName)})
 	}
 
 	return mts, nil
@@ -129,9 +129,10 @@ func (p *Plugin) GetMetricTypes(cfg plugin.PluginConfigType) ([]plugin.PluginMet
 
 // CollectMetrics returns list of requested metric values
 // It returns error in case retrieval was not successful
-func (p *Plugin) CollectMetrics(metrics []plugin.PluginMetricType) ([]plugin.PluginMetricType, error) {
-	mts := []plugin.PluginMetricType{}
-	items, err := config.GetConfigItems(metrics[0], []string{setFileConfigVar, execTimeOutConfigVar})
+func (p *Plugin) CollectMetrics(metrics []plugin.MetricType) ([]plugin.MetricType, error) {
+	mts := []plugin.MetricType{}
+	items, err := config.GetConfigItems(metrics[0], setFileConfigVar, execTimeOutConfigVar)
+
 	if err != nil {
 		return nil, err
 	}
@@ -158,19 +159,19 @@ func (p *Plugin) CollectMetrics(metrics []plugin.PluginMetricType) ([]plugin.Plu
 
 	for _, m := range metrics {
 
-		go func(m plugin.PluginMetricType) {
+		go func(m plugin.MetricType) {
 			defer wg.Done()
 			logFields := map[string]interface{}{}
 
 			ns := m.Namespace()
-			logFields["namespace"] = "/" + strings.Join(ns, "/")
+			logFields["namespace"] = m.Namespace().String()
 			if len(ns) != nsLength {
 				serr := serror.New(fmt.Errorf("Incorrect namespace length"), logFields)
 				log.WithFields(serr.Fields()).Warn(serr.Error())
 				return
 			}
 			//get metric name, it is the last element of namespace
-			mtName := ns[nsLength-1]
+			mtName := ns[nsLength-1].Value
 
 			timer := time.Now()
 			//execute command
@@ -195,10 +196,9 @@ func (p *Plugin) CollectMetrics(metrics []plugin.PluginMetricType) ([]plugin.Plu
 				return
 			}
 
-			mt := plugin.PluginMetricType{
+			mt := plugin.MetricType{
 				Namespace_: m.Namespace(),
 				Data_:      data,
-				Source_:    p.host,
 				Timestamp_: time.Now(),
 			}
 
