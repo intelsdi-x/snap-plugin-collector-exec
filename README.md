@@ -144,7 +144,7 @@ $ $SNAP_PATH/bin/snapctl plugin load snap-plugin-collector-exec
 ```
 Load file plugin for publishing:
 ```
-$ $SNAP_PATH/bin/snapctl plugin load $SNAP_PATH/plugin/snap-publisher-file
+$ $SNAP_PATH/bin/snapctl plugin load $SNAP_PATH/plugin/snap-publisher-mock-file
 ```
 See available metrics for your system
 
@@ -175,7 +175,7 @@ Create a task manifest file to use snap-plugin-collector-exec plugin (exemplary 
             "process": null,
             "publish": [
                 {
-                    "plugin_name": "file",
+                    "plugin_name": "mock-file",
                     "config": {
                         "file": "/tmp/published_exec"
                     }

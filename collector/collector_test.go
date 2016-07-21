@@ -28,6 +28,7 @@ import (
 	"time"
 
 	"github.com/intelsdi-x/snap/control/plugin"
+	"github.com/intelsdi-x/snap/core"
 	"github.com/intelsdi-x/snap/core/cdata"
 	"github.com/intelsdi-x/snap/core/ctypes"
 	"github.com/intelsdi-x/snap/core/serror"
@@ -517,12 +518,12 @@ func mockExecuteCmdWithTimeout(executableFilePath string, args []string) ([]byte
 }
 
 var (
-	mockMts = []plugin.PluginMetricType{
-		plugin.PluginMetricType{Namespace_: []string{vendor, pluginName, "metric4"}},
-		plugin.PluginMetricType{Namespace_: []string{vendor, pluginName, "metric3"}},
-		plugin.PluginMetricType{Namespace_: []string{vendor, pluginName, "metric2"}},
-		plugin.PluginMetricType{Namespace_: []string{vendor, pluginName, "metric1"}},
-		plugin.PluginMetricType{Namespace_: []string{vendor, pluginName, "metric0"}},
+	mockMts = []plugin.MetricType{
+		plugin.MetricType{Namespace_: core.NewNamespace(vendor, pluginName, "metric4")},
+		plugin.MetricType{Namespace_: core.NewNamespace(vendor, pluginName, "metric3")},
+		plugin.MetricType{Namespace_: core.NewNamespace(vendor, pluginName, "metric2")},
+		plugin.MetricType{Namespace_: core.NewNamespace(vendor, pluginName, "metric1")},
+		plugin.MetricType{Namespace_: core.NewNamespace(vendor, pluginName, "metric0")},
 	}
 
 	mockFilePath = "./temp_setfile.json"
