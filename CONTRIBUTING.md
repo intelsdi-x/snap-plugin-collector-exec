@@ -38,10 +38,10 @@ If you have questions feel free to contact the [maintainers](https://github.com/
 ## Contributing Examples
 The most immediately helpful way you can benefit this project is by cloning the repository, adding some further examples and submitting a pull request.
 
-Have you written a blog post about how you use [snap](http://github.com/intelsdi-x/snap) and/or this plugin? Send it to us [on Gitter](https://gitter.im/intelsdi-x/snap)!
+Have you written a blog post about how you use [snap](http://github.com/intelsdi-x/snap) and/or this plugin? Share it with us!
 
 ## Contribute Elsewhere
-This repository is one of **many** plugins in **snap**, a powerful telemetry framework. See the full project at http://github.com/intelsdi-x/snap.
+This repository is one of **many** plugins in **Snap**, the open telemetry framework. See the full project at http://github.com/intelsdi-x/snap.
 
 ## Thank You
 And **thank you!** Your contribution, through code and participation, is incredibly important to us.

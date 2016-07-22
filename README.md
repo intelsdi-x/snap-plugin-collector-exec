@@ -1,10 +1,8 @@
 # snap plugin collector - exec
 
-The plugin launches executable files and collects their outputs.
+A generic plugin to launch executable files and collects their outputs.
 
-The plugin is a generic plugin. You can configure metrics names, type of collecting data, executables files, arguments necessary for executables files.
-
-This plugin gives powerful and dangerous tool - user can run any program. Running this plugin with root privileges may be extremely dangerous and it is not advised. 
+*WARNING*: This plugin gives the power to run any program on the server. Running this plugin with root privileges may be extremely dangerous and it is not advised. 
 
 1. [Getting Started](#getting-started)
   * [System Requirements](#system-requirements)
@@ -29,14 +27,14 @@ This plugin gives powerful and dangerous tool - user can run any program. Runnin
 * [golang 1.5+](https://golang.org/dl/) - needed only for building
 
 ### Operating systems
-All OSs currently supported by snap:
+All OSs currently supported by Snap:
 * Linux/amd64
 
 ### Installation
 
 #### Download exec plugin binary:
 
-You can get the pre-built binaries for your OS and architecture at snap's [Github Releases](https://github.com/intelsdi-x/snap/releases) page.
+You can get the pre-built binaries for your OS and architecture at Snap's [Github Releases](https://github.com/intelsdi-x/snap/releases) page.
 
 #### To build the plugin binary:
 
@@ -54,35 +52,36 @@ This builds the plugin in `/build/rootfs`.
 
 ### Configuration and Usage
 
-* Set up the [snap framework](https://github.com/intelsdi-x/snap/blob/master/README.md#getting-started).
+* Set up the [Snap framework](https://github.com/intelsdi-x/snap/blob/master/README.md#getting-started).
 
-* Create configuration file (called as a setfile) in which will be defined metrics (metrics names, type of collecting data, executables files, arguments necessary for executables files), read setfile structure description available in [setfile structure](https://github.com/intelsdi-x/snap-plugin-collector-exec/blob/master/README.md#setfile-structure) and see exemplary in [examples/setfiles/](https://github.com/intelsdi-x/snap-plugin-collector-exec/blob/master/examples/setfiles/).
+* Create the configuration file (called `setfile`) using the examples below under [setfile structure](https://github.com/intelsdi-x/snap-plugin-collector-exec/blob/master/README.md#setfile-structure) or by example in [`examples/setfiles/`](https://github.com/intelsdi-x/snap-plugin-collector-exec/blob/master/examples/setfiles/).
 
-* Create Global Config, see description in [snap's Global Config] (https://github.com/intelsdi-x/snap-plugin-collector-exec/blob/master/README.md#snaps-global-config).
- 
-Notice that this plugin is a generic plugin, it cannot work without configuration, because there is no reasonable default behavior. Errors in configuration or in execution of program/command block collecting of metrics, errors are logged but plugin still work.
+* Create a [Snap Global Config](https://github.com/intelsdi-x/snap-plugin-collector-exec/blob/master/README.md#snaps-global-config), which is a requirement for this plugin.
 
-Setfile contains configuration which should be protected. It is advised to limit access for this configuration and regularly audit its content.
+#### Why Snap Global Config is required 
+Notice that this plugin is a generic plugin. It cannot work without configuration, because there is no reasonable default behavior. Errors in configuration or in execution of the commands run by this plugin will block collecting of metrics and will show up in plugin log files.
 
-It is not advised to use dynamic query notation in task manifest for exec plugin. User should consciously make decision on starting program or executing command to avoid unexpected changes.
+#### A Note on Security
+The Setfile contains configuration which should be protected. It is advised to limit access for this configuration and regularly audit its content. 
 
-The executable file which is used to collect metrics must write its output (value of metric) to standard output (stdout) in plain form. User interaction cannot be needed by executable file. Some of commands or programs require special privileges to execute so user must check if configuration can be launch successfully.
+It is not advised to use dynamic query notation in task manifest for exec plugin. Users should consciously make decision on the executing command to avoid unexpected changes to the system.
 
-The executable file will be launch per interval set in task manifest and it may have impact on system performance. New process is started per interval for each of metric and this process must end and clean resources itself.
+#### Other important notes on usage
+
+The executable file which is used to collect metrics must write its output (value of metric) to standard output (stdout) in plain form. User interaction cannot be needed by executable file. Some commands or programs require special privileges to execute, so be aware of configuration to ensure successful runs.
+
+The executable file will launch a process for each metric gathered and will be launch at the interval set in the Task Manifest (or through `snapctl`). Processes are expected to end and clean up any used resources between runs. This behavior may have impact on system performance.
 
 ## Documentation
 
 ### Collected Metrics
-The plugin collects outputs of executable files.
+The plugin collects the outputs of executable files as metrics in the namespace `/intel/exec/<metric_name>/`.
 
-Metrics are available in namespace: `/intel/exec/<metric_name>/`.
+Each metrics's name is defined in the Setfile. Metrics can be any of the following data types: float64, float32, int64, int32, int16, int8, uint64, uint32, uint16, uint8, string.
 
-Metrics's names are defined in setfile.
-Metrics can be collected in one of following data types: float64, float32, int64, int32, int16, int8, uint64, uint32, uint16, uint8, string.
-
-### snap's Global Config
-Global configuration files are described in [snap's documentation](https://github.com/intelsdi-x/snap/blob/master/docs/SNAPD_CONFIGURATION.md). You have to add section "exec" in "collector" section and then specify following options:
-- `"setfile"` - path to exec plugin configuration file (path to setfile),
+### Snap's Global Config
+Global configuration files are described in [snap's documentation](https://github.com/intelsdi-x/snap/blob/master/docs/SNAPD_CONFIGURATION.md). A section is required, titled "exec" in "collector", with the following options:
+- `"setfile"` - path to exec plugin configuration file (path to Setfile),
 - `"execution_timeout"` -   max time for command/program execution in seconds (default value: 10 sec).
 
 See example Global Config in [examples/cfg/] (https://github.com/intelsdi-x/snap-plugin-collector-exec/blob/master/examples/configs/).
@@ -90,22 +89,21 @@ See example Global Config in [examples/cfg/] (https://github.com/intelsdi-x/snap
 
 ### Setfile structure
 
-Setfile contains JSON structure which is used to define metrics. 
-Metric is defined as JSON object in following format:
+Setfile contains a JSON structure which is used to define metrics. Each metric is defined as JSON object in following format:
 ```
   "<metric_name>": {
             "exec": "<executable_file>",
             "type": "<data_type>",
-            "args": [ "<arg1>", "<arg1>", "<arg3>"]
+            "args": [ "<arg1>", "<arg2>", "<arg3>"]
     }
 ```
-where:
-- metric_name -  metric name which is used in metric's namespace (required),
-- executable_file -  path to executable file which should by launch to collect metric (required),
-- data_type -  metric data type (required)
-- arg1, arg1, arg3 -  arguments needed by executable file which is used to collect metric (optional).
+Where:
+- `metric_name` -  metric name which is used in metric's namespace (required),
+- `executable_file` -  path to executable file which should by launch to collect metric (required),
+- `data_type` -  metric data type (required)
+- `arg1`, `arg2`, `arg3` -  arguments needed by executable file which is used to collect metric (optional).
 
-For example 'echo_metric' metric for  'echo' program which is available in '/bin' with argument '1.1' and  float64 data type should have following definition:
+For example `'echo_metric'` metric for the `'echo'` program is available in `'/bin'` with argument `'1.1'` and results in a float64 data type should have the following definition:
 ```
   "echo_metric": {
             "exec": "/bin/echo",
@@ -113,9 +111,9 @@ For example 'echo_metric' metric for  'echo' program which is available in '/bin
             "args": [ "1.1"]
     }
 ```
-The metric defined above has following namespace `/intel/exec/echo_metric`.
+The metric defined above has the following namespace `/intel/exec/echo_metric`.
 
-If program returns metric with additional information then it is needed to use another tool to extract value of metric, see example below which shows extraction of numeric data from output of echo command:
+If the running process returns metric with additional information, it will require another tool to extract the target values from the output. For example, the below example shows extraction of numeric data from output of `echo`:
 ```
 "echo_metric": {
 				"exec": "/bin/sh",
@@ -123,43 +121,43 @@ If program returns metric with additional information then it is needed to use a
 				"args": [ "-c", "echo  \"test:1775\" | awk -F':' '{printf $2}'"]
 		}
 ```
-As it is shown, `exec` in setfile could be defined as combination of commands.
+As you can see, `exec` in setfile could be defined as a combination of commands.
 
 ### Examples
-Example running snap-plugin-collector-exec plugin and writing data to a file.
+To walk through a working example of snap-plugin-collector-exec, follow these steps:
 
-Create configuration file (setfile) for exec plugin, see exemplary in [examples/setfiles/](https://github.com/intelsdi-x/snap-plugin-collector-exec/blob/master/examples/setfiles/).
+1. Create a configuration file (setfile) or copy the example file at [`examples/setfiles/`](https://github.com/intelsdi-x/snap-plugin-collector-exec/blob/master/examples/setfiles/).
 
-Set path to configuration file as the field `setfile` and maximal time for command/program execution as the field `execution_timeout` in Global Config, see exemplary in [examples/configs/] (https://github.com/intelsdi-x/snap-plugin-collector-exec/blob/master/examples/configs/).
+2. Copy the example Setfile and then set the correct path to the configuration file as the field `setfile` along with a max time for the process to execute as the field `execution_timeout` in Global Config ([`examples/configs/`] (https://github.com/intelsdi-x/snap-plugin-collector-exec/blob/master/examples/configs/`).
 
-In one terminal window, open the snap daemon (in this case with logging set to 1,  trust disabled and global configuration saved in config.json ):
+3. In one terminal window, start `snapd`, the snap daemon, (in this case with logging set to 1,  trust disabled and global configuration saved in config.json ):
 ```
-$ $SNAP_PATH/bin/snapd -l 1 -t 0 --config config.json
+$ snapd -l 1 -t 0 --config config.json
 ```
-In another terminal window:
+4. In another terminal window:
 
 Load snap-plugin-collector-exec plugin
 ```
-$ $SNAP_PATH/bin/snapctl plugin load snap-plugin-collector-exec
+$ snapctl plugin load snap-plugin-collector-exec
 ```
 Load file plugin for publishing:
 ```
-$ $SNAP_PATH/bin/snapctl plugin load $SNAP_PATH/plugin/snap-publisher-mock-file
+$ snapctl plugin load $SNAP_PATH/plugin/snap-publisher-mock-file
 ```
 See available metrics for your system
 
 ```
-$ $SNAP_PATH/bin/snapctl metric list
+$ snapctl metric list
 ```
 
-Create a task manifest file to use snap-plugin-collector-exec plugin (exemplary in [examples/tasks/] (https://github.com/intelsdi-x/snap-plugin-collector-exec/blob/master/examples/tasks/)):
+5. Write a Task Manifest (example in [`examples/tasks/`] (https://github.com/intelsdi-x/snap-plugin-collector-exec/blob/master/examples/tasks/)):
 ```
 {
 {
     "version": 1,
     "schedule": {
         "type": "simple",
-        "interval": "1s"
+        "interval": "5s"
     },
     "workflow": {
         "collect": {
@@ -186,20 +184,26 @@ Create a task manifest file to use snap-plugin-collector-exec plugin (exemplary 
 }
 ```
 
-Create a task:
+6. Now create the task from the Task Manifest:
 ```
-$ $SNAP_PATH/bin/snapctl task create -t task.json
+$ snapctl task create -t task.json
+ID: ef720332-8f0f-4cd7-84f8-73219d403c35
+Name: Task-ef720332-8f0f-4cd7-84f8-73219d403c35
+State: Running
+```
+
+7. And watch the metrics populate: 
+```
+$ snapctl task watch ef720332-8f0f-4cd7-84f8-73219d403c35
 ```
 
 ### Roadmap
 There isn't a current roadmap for this plugin, but it is in active development. As we launch this plugin, we do not have any outstanding requirements for the next release.
 
-If you have a feature request, please add it as an [issue](https://github.com/intelsdi-x/snap-plugin-collector-users/issues) and/or submit a [pull request](https://github.com/intelsdi-x/snap-plugin-collector-users/pulls).
+If you have a feature request, please add it as an [issue](https://github.com/intelsdi-x/snap-plugin-collector-users/issues) and feel free to then submit a [pull request](https://github.com/intelsdi-x/snap-plugin-collector-users/pulls).
 
 ## Community Support
-This repository is one of **many** plugins in **snap**, a powerful telemetry framework. See the full project at http://github.com/intelsdi-x/snap.
-
-To reach out to other users, head to the [main framework](https://github.com/intelsdi-x/snap#community-support) or visit [snap Gitter channel](https://gitter.im/intelsdi-x/snap).
+This repository is one of **many** plugins in **Snap**, the open telemetry framework. See the full project at http://github.com/intelsdi-x/snap. To reach out to other users, head to the [main framework](https://github.com/intelsdi-x/snap#community-support).
 
 ## Contributing
 We love contributions!
