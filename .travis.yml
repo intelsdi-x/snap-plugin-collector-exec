@@ -1,7 +1,7 @@
 sudo: required
 language: go
 go:
-- 1.6
+- 1.6.2
 - 1.5.3
 env:
   global:
@@ -18,6 +18,24 @@ install:
 - make deps
 script:
 - make check TEST=$TEST 2>&1 # Run test suite
+before_deploy:
+  - make all
+  - "./scripts/pre_deploy.sh"
+deploy:
+  provider: s3
+  access_key_id: AKIAINMB43VSSPFZISAA
+  secret_access_key:
+    secure: K9Ujxi6nSPBShQT53F0iD72TgvLr3NhmQ6/6QubL0h0LXeIIDGEBEc9TBmXZyjwm/vazSSRGadpz6kx9wPKTVsYC/pxlePE2KYbLvqZtMzYptPf+bxBf6QuTGffUmStSmKFwTdkj6Fkrz7SLbgNTHyx+JeRMPOUawpVOflonHqvxn5xfxAhG9W4NRo8YQO4CgGqN9dH1Y3FvQDfq9m7Gr60X6hH/FjSAY7Ic29knbjp35GilkeSY9OMFA8d6FButRnobjhsFi/B+CT8UXWIIMZi67oNKJJJ/50Gqb07FPWlw4J3MBNbnsQeAdPCsuN74z8eBMNI7oqILPD7CwU9InMyrRG3X0dzO2iWOXU/IJvLYm2QoJdyhDk9m3mKQS52aNi1faufUeYb0qp6H5LcIx7DfvgxVwrnyXyTLYwSOWKcV2MfUXWfZFMJbIUDQeGej7mdvIa3QUCDUN8Qzi3GSo7F0uwXvZKNGWUowXtgpmTTchkcON0G6Go6sV1k0iuqg/38ZiWM2ODbDRWmkOb0R2LMlNDPqZ1irEXxqQAeJRrgoJ+B+3hSo0XbGvhkrDcDhSMEU7ZNF/eSylKjkIPCLptitYSZazRVH8vIs6H4Mozn582v583N8fhU9SF69A9MR3NDiViKntZORMjkdqKPV7Ln2e6+8eUkiGoiPnoR09CQ=
+  bucket: snap.ci.snap-telemetry.io
+  region: us-west-2
+  skip_cleanup: true
+  local-dir: build
+  upload-dir: plugin
+  acl: public_read
+  on:
+    repo: intelsdi-x/snap-plugin-collector-exec
+    branch: build
+condition: $TEST_TYPE=build && $TRAVIS_GO_VERSION="1.6.2"
 notifications:
   slack:
     secure: VkbZLIc2RH8yf3PtIAxUNPdAu3rQQ7yQx0GcK124JhbEnZGaHyK615V0rbG7HcVmYKGPdB0cXqZiLBDKGqGKb2zR1NepOe1nF03jxGSpPq8jIFeEXSJGEYGL34ScDzZZGuG6qwbjFcXiW5lqn6t8igzp7v2+URYBaZo5ktCS2xY=
