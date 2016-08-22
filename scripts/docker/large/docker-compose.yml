@@ -1,0 +1,9 @@
+version: '2'
+services:
+  main:
+    container_name: exec_large_test
+    image: mkrolik/alpine-python:latest
+    network_mode: "host"
+    volumes:
+      - ${PLUGIN_SRC}:/snap-plugin-collector-exec
+    entrypoint: sh -c 'python /snap-plugin-collector-exec/scripts/test/large.py'
