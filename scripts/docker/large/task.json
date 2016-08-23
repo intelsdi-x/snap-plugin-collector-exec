@@ -1,0 +1,19 @@
+{
+    "version": 1,
+    "schedule": {
+        "type": "simple",
+        "interval": "1s"
+    },
+    "workflow": {
+        "collect": {
+            "metrics": {
+                "/intel/exec/metric0": {},
+                "/intel/exec/metric1": {}
+           },
+            "config": {
+            },
+            "process": null,
+            "publish": null
+        }
+    }
+}
