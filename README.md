@@ -128,7 +128,7 @@ To walk through a working example of snap-plugin-collector-exec, follow these st
 
 1. Create a configuration file (setfile) or copy the example file at [`examples/setfiles/`](https://github.com/intelsdi-x/snap-plugin-collector-exec/blob/master/examples/setfiles/).
 
-2. Copy the example Setfile and then set the correct path to the configuration file as the field `setfile` along with a max time for the process to execute as the field `execution_timeout` in Global Config ([`examples/configs/`] (https://github.com/intelsdi-x/snap-plugin-collector-exec/blob/master/examples/configs/`).
+2. Copy the example Setfile and then set the correct path to the configuration file as the field `setfile` along with a max time for the process to execute as the field `execution_timeout` in Global Config ([`examples/configs/`] (https://github.com/intelsdi-x/snap-plugin-collector-exec/blob/master/examples/configs/)).
 
 3. In one terminal window, start `snapd`, the snap daemon, (in this case with logging set to 1,  trust disabled and global configuration saved in config.json ):
 ```
