@@ -6,7 +6,7 @@
     "metric1": {
             "exec": "/bin/sh",
             "type": "int64",
-            "args": [ "-c", "echo  \"test:1775\" | awk -F':' '{printf $2}'"]
+            "args": [ "-c", "echo  \"test:1775\" | awk -F':' '{printf $2}' | tr -d \"\n\""]
     },
      "metric2": {
             "exec": "/usr/local/go/bin/go",
@@ -16,7 +16,7 @@
      "metric3": {
             "exec": "/bin/sh",
             "type": "float64",
-            "args": ["-c", "awk 'BEGIN{printf \"%.2f\", (355/100)}'"]
+            "args": ["-c", "awk 'BEGIN{printf \"%.2f\", (355/100)}' | tr -d \"\n\""]
      },
     "metric4": {
             "exec": "/bin/echo",
