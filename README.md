@@ -68,9 +68,11 @@ It is not advised to use dynamic query notation in task manifest for exec plugin
 
 #### Other important notes on usage
 
-The executable file which is used to collect metrics must write its output (value of metric) to standard output (stdout) in plain form. User interaction cannot be needed by executable file. Some commands or programs require special privileges to execute, so be aware of configuration to ensure successful runs.
+The executable file which is used to collect metrics must write its output (value of metric) to standard output (stdout) in plain form, without unnecessary white characters.
 
-The executable file will launch a process for each metric gathered and will be launch at the interval set in the Task Manifest (or through `snapctl`). Processes are expected to end and clean up any used resources between runs. This behavior may have impact on system performance.
+User interaction cannot be needed by executable file. Some commands or programs require special privileges to execute, so be aware of configuration to ensure successful runs.
+
+The executable file will launch a process for each metric gathered and will be launch at the interval set in the Task Manifest (or through `snaptel`). Processes are expected to end and clean up any used resources between runs. This behavior may have impact on system performance.
 
 ## Documentation
 
@@ -103,12 +105,12 @@ Where:
 - `data_type` -  metric data type (required)
 - `arg1`, `arg2`, `arg3` -  arguments needed by executable file which is used to collect metric (optional).
 
-For example `'echo_metric'` metric for the `'echo'` program is available in `'/bin'` with argument `'1.1'` and results in a float64 data type should have the following definition:
+For example `'echo_metric'` metric for the `'echo'` program is available in `'/bin'` with arguments `'-n'`, `'1.1'` and results in a float64 data type should have the following definition:
 ```
   "echo_metric": {
             "exec": "/bin/echo",
             "type": "float64",
-            "args": [ "1.1"]
+            "args": ["-n", "1.1"]
     }
 ```
 The metric defined above has the following namespace `/intel/exec/echo_metric`.
@@ -130,24 +132,24 @@ To walk through a working example of snap-plugin-collector-exec, follow these st
 
 2. Copy the example Setfile and then set the correct path to the configuration file as the field `setfile` along with a max time for the process to execute as the field `execution_timeout` in Global Config ([`examples/configs/`] (https://github.com/intelsdi-x/snap-plugin-collector-exec/blob/master/examples/configs/)).
 
-3. In one terminal window, start `snapd`, the snap daemon, (in this case with logging set to 1,  trust disabled and global configuration saved in config.json ):
+3. In one terminal window, start `snapteld`, the Snap daemon, (in this case with logging set to 1,  trust disabled and global configuration saved in config.json ):
 ```
-$ snapd -l 1 -t 0 --config config.json
+$ snapteld -l 1 -t 0 --config config.json
 ```
 4. In another terminal window:
 
 Load snap-plugin-collector-exec plugin
 ```
-$ snapctl plugin load snap-plugin-collector-exec
+$ snaptel plugin load snap-plugin-collector-exec
 ```
 Load file plugin for publishing:
 ```
-$ snapctl plugin load $SNAP_PATH/plugin/snap-publisher-mock-file
+$ snaptel plugin load snap-plugin-publisher-file
 ```
 See available metrics for your system
 
 ```
-$ snapctl metric list
+$ snaptel metric list
 ```
 
 5. Write a Task Manifest (example in [`examples/tasks/`] (https://github.com/intelsdi-x/snap-plugin-collector-exec/blob/master/examples/tasks/)):
@@ -173,7 +175,7 @@ $ snapctl metric list
             "process": null,
             "publish": [
                 {
-                    "plugin_name": "mock-file",
+                    "plugin_name": "file",
                     "config": {
                         "file": "/tmp/published_exec"
                     }
@@ -200,7 +202,7 @@ $ snapctl task watch ef720332-8f0f-4cd7-84f8-73219d403c35
 ### Roadmap
 There isn't a current roadmap for this plugin, but it is in active development. As we launch this plugin, we do not have any outstanding requirements for the next release.
 
-If you have a feature request, please add it as an [issue](https://github.com/intelsdi-x/snap-plugin-collector-users/issues) and feel free to then submit a [pull request](https://github.com/intelsdi-x/snap-plugin-collector-users/pulls).
+If you have a feature request, please add it as an [issue](https://github.com/intelsdi-x/snap-plugin-collector-exec/issues) and feel free to then submit a [pull request](https://github.com/intelsdi-x/snap-plugin-collector-exec/pulls).
 
 ## Community Support
 This repository is one of **many** plugins in **Snap**, the open telemetry framework. See the full project at http://github.com/intelsdi-x/snap. To reach out to other users, head to the [main framework](https://github.com/intelsdi-x/snap#community-support).
@@ -217,4 +219,4 @@ And **thank you!** Your contribution, through code and participation, is incredi
 
 ## Acknowledgements
 
-* Author: [Katarzyna Zabrocka](https://github.com/katarzyna-z)
+* Author: [Katarzyna Kujawa](https://github.com/katarzyna-z)
