@@ -120,10 +120,12 @@ If the running process returns metric with additional information, it will requi
 "echo_metric": {
 				"exec": "/bin/sh",
 				"type": "int64",
-				"args": [ "-c", "echo  \"test:1775\" | awk -F':' '{printf $2}'"]
+				"args": [ "-c", "echo  \"test:1775\" | awk -F':' '{printf $2}' | tr -d \"\n\""]
 		}
 ```
 As you can see, `exec` in setfile could be defined as a combination of commands.
+
+*Note:* If your command return result with a newline, you can use `tr -d \"\n\"` for delete newline characters
 
 ### Examples
 To walk through a working example of snap-plugin-collector-exec, follow these steps:
