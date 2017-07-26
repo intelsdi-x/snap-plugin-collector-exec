@@ -86,7 +86,7 @@ Global configuration files are described in [snap's documentation](https://githu
 - `"setfile"` - path to exec plugin configuration file (path to Setfile),
 - `"execution_timeout"` -   max time for command/program execution in seconds (default value: 10 sec).
 
-See example Global Config in [examples/cfg/] (https://github.com/intelsdi-x/snap-plugin-collector-exec/blob/master/examples/configs/).
+See example Global Config in [examples/cfg/](https://github.com/intelsdi-x/snap-plugin-collector-exec/blob/master/examples/configs/).
 
 
 ### Setfile structure
@@ -125,14 +125,14 @@ If the running process returns metric with additional information, it will requi
 ```
 As you can see, `exec` in setfile could be defined as a combination of commands.
 
-*Note:* If your command return result with a newline, you can use `tr -d \"\n\"` for delete newline characters
+*Note:* If your command returns result with a newline, you can use `tr -d \"\n\"` to delete newline characters.
 
 ### Examples
 To walk through a working example of snap-plugin-collector-exec, follow these steps:
 
 1. Create a configuration file (setfile) or copy the example file at [`examples/setfiles/`](https://github.com/intelsdi-x/snap-plugin-collector-exec/blob/master/examples/setfiles/).
 
-2. Copy the example Setfile and then set the correct path to the configuration file as the field `setfile` along with a max time for the process to execute as the field `execution_timeout` in Global Config ([`examples/configs/`] (https://github.com/intelsdi-x/snap-plugin-collector-exec/blob/master/examples/configs/)).
+2. Copy the example Setfile and then set the correct path to the configuration file as the field `setfile` along with a max time for the process to execute as the field `execution_timeout` in Global Config ([`examples/configs/`](https://github.com/intelsdi-x/snap-plugin-collector-exec/blob/master/examples/configs/)).
 
 3. In one terminal window, start `snapteld`, the Snap daemon, (in this case with logging set to 1,  trust disabled and global configuration saved in config.json ):
 ```
@@ -154,7 +154,7 @@ See available metrics for your system
 $ snaptel metric list
 ```
 
-5. Write a Task Manifest (example in [`examples/tasks/`] (https://github.com/intelsdi-x/snap-plugin-collector-exec/blob/master/examples/tasks/)):
+5. Write a Task Manifest (example in [`examples/tasks/`](https://github.com/intelsdi-x/snap-plugin-collector-exec/blob/master/examples/tasks/)):
 ```
 {
 {
