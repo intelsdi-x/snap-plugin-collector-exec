@@ -1,0 +1,64 @@
+hash: 5e65a99546f7c4d941a378db865856ad5d639e8f56011cc7afa225c67bf7326c
+updated: 2017-09-07T14:18:27.975100306+02:00
+imports:
+- name: github.com/asaskevich/govalidator
+  version: 9699ab6b38bee2e02cd3fe8b99ecf67665395c96
+- name: github.com/intelsdi-x/snap
+  version: 78797b2dc0ca39e6e2bb39c56ccfea5033f3f6a4
+  subpackages:
+  - control/plugin
+  - control/plugin/cpolicy
+  - control/plugin/encoding
+  - control/plugin/encrypter
+  - core
+  - core/cdata
+  - core/ctypes
+  - core/serror
+  - pkg/ctree
+  - pkg/fileutils
+  - pkg/schedule
+  - pkg/stringutils
+  - scheduler/wmap
+- name: github.com/intelsdi-x/snap-plugin-collector-exec
+  version: fe1a85668149c55787f09c51308e877c058e7037
+  subpackages:
+  - collector
+- name: github.com/intelsdi-x/snap-plugin-utilities
+  version: 0b327aae781a2e94b414be121d5ac4668750156c
+  subpackages:
+  - config
+- name: github.com/mitchellh/mapstructure
+  version: 281073eb9eb092240d33ef253c404f1cca550309
+- name: github.com/robfig/cron
+  version: 32d9c273155a0506d27cf73dd1246e86a470997e
+- name: github.com/Sirupsen/logrus
+  version: f006c2ac4710855cf0f916dd6b77acf6b048dc6e
+- name: golang.org/x/crypto
+  version: aedad9a179ec1ea11b7064c57cbc6dc30d7724ec
+  subpackages:
+  - openpgp
+  - ssh/terminal
+- name: golang.org/x/sys
+  version: 7f918dd405547ecb864d14a8ecbbfe205b5f930f
+  subpackages:
+  - unix
+- name: gopkg.in/yaml.v2
+  version: c1cd2254a6dd314c9d73c338c12688c9325d85c6
+testImports:
+- name: github.com/gopherjs/gopherjs
+  version: b40cd48c38f9a18eb3db20d163bad78de12cf0b7
+  subpackages:
+  - js
+- name: github.com/jtolds/gls
+  version: 77f18212c9c7edc9bd6a33d383a7b545ce62f064
+- name: github.com/smartystreets/assertions
+  version: 9c0ea8acbc1d8ad689f9e6fe0c1fa5838e0cabc2
+  subpackages:
+  - internal/go-render/render
+  - internal/oglematchers
+- name: github.com/smartystreets/goconvey
+  version: 9e8dc3f972df6c8fcc0375ef492c24d0bb204857
+  subpackages:
+  - convey
+  - convey/gotest
+  - convey/reporting

@@ -1,0 +1,23 @@
+package: github.com/intelsdi-x/snap-pluginsync/modules/snap-plugin-collector-exec
+import:
+- package: github.com/Sirupsen/logrus
+  version: ^1.0.3
+- package: github.com/intelsdi-x/snap-plugin-collector-exec
+  subpackages:
+  - collector
+- package: github.com/intelsdi-x/snap-plugin-utilities
+  subpackages:
+  - config
+- package: github.com/intelsdi-x/snap
+  version: ^1.3.0
+  subpackages:
+  - control/plugin
+  - control/plugin/cpolicy
+  - core
+  - core/serror
+- package: github.com/mitchellh/mapstructure
+testImport:
+- package: github.com/smartystreets/goconvey
+  version: ^1.6.3
+  subpackages:
+  - convey
