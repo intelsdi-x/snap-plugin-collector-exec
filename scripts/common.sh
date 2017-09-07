@@ -1,4 +1,22 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# File managed by pluginsync
+
+# http://www.apache.org/licenses/LICENSE-2.0.txt
+#
+#
+# Copyright 2016 Intel Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 set -e
 set -u
@@ -6,6 +24,7 @@ set -o pipefail
 
 LOG_LEVEL="${LOG_LEVEL:-6}"
 NO_COLOR="${NO_COLOR:-}"
+NO_GO_TEST=${NO_GO_TEST:-'-not -path "./.*" -not -path "*/_*" -not -path "./Godeps/*" -not -path "./vendor/*"'}
 
 trap_exitcode() {
   exit $?
@@ -36,13 +55,17 @@ _notice ()  { [ "${LOG_LEVEL}" -ge 5 ] && echo "$(_fmt notice) ${*}" 1>&2 || tru
 _warning () { [ "${LOG_LEVEL}" -ge 4 ] && echo "$(_fmt warning) ${*}" 1>&2 || true; }
 _error ()   { [ "${LOG_LEVEL}" -ge 3 ] && echo "$(_fmt error) ${*}" 1>&2 || true; exit 1; }
 
-_test_dirs() {
-  local test_dirs=$(find . -type f -name '*.go' -not -path "./.*" -not -path "*/_*" -not -path "./Godeps/*" -not -path "./vendor/*" -print0 | xargs -0 -n1 dirname| sort -u)
-  echo "$test_dirs"
+_test_files() {
+  local test_files=$(sh -c "find . -type f -name '*.go' ${NO_GO_TEST} -print")
+  _debug "go source files ${test_files}"
+  echo "${test_files}"
 }
 
-#_debug "go code directories:
-#${test_dirs}"
+_test_dirs() {
+  local test_dirs=$(sh -c "find . -type f -name '*.go' ${NO_GO_TEST} -print0" | xargs -0 -n1 dirname | sort -u)
+  _debug "go code directories ${test_dirs}"
+  echo "${test_dirs}"
+}
 
 _go_get() {
   local _url=$1
@@ -53,9 +76,13 @@ _go_get() {
   type -p "${_util}" > /dev/null || go get "${_url}" && _debug "go get ${_util} ${_url}"
 }
 
+_gofmt() {
+  test -z "$(gofmt -l -d $(_test_files) | tee /dev/stderr)"
+}
+
 _goimports() {
   _go_get golang.org/x/tools/cmd/goimports
-  test -z "$(goimports -l -d $(find . -type f -name '*.go' -not -path "./vendor/*") | tee /dev/stderr)"
+  test -z "$(goimports -l -d $(_test_files) | tee /dev/stderr)"
 }
 
 _golint() {
